@@ -43,4 +43,6 @@ tokens = []
 for text in texts:
 	tokens += nltk.word_tokenize(text)
 
-print(nltk.pos_tag(tokens))
+tokens_pos = nltk.pos_tag(tokens)
+
+print(nltk.ne_chunk(tokens_pos))
