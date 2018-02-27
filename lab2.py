@@ -38,11 +38,82 @@ texts = [text for text in texts if len(text) > 0]
 # remove HTML tags
 texts = [re.sub(r"<.*?>", "", str(text)) for text in texts]
 
-tokens = []
 
-for text in texts:
-	tokens += nltk.word_tokenize(text)
+
+texts = texts[0]
+
+#for text in texts:
+tokens = nltk.word_tokenize(texts)
+
 
 tokens_pos = nltk.pos_tag(tokens)
 
-print(nltk.ne_chunk(tokens_pos))
+chunks = nltk.ne_chunk(tokens_pos)
+tagged_chunks = [chunk for chunk in chunks if type(chunk) != tuple]
+#print(tagged_chunks)
+''' Annotation guidelines:
+For annotation we looped through all tokens in the text and annotated each token
+if it is either (part of) a person (PERSON), location (GPE) or organization (ORGANIZATION)
+
+ '''
+
+
+
+''' CoNLL2003 format:
+Token	POS-tag		Gold standard NER tag	Actual Tag
+Poep	N			O						Person
+ '''
+
+#Manually annotate and store (token_index, tag)
+gold_labels = [('Amanda',		'PERSON'),
+				('Chantal',		'PERSON'),
+				('Bacon', 		'PERSON'),
+				('Moon',		'ORGANIZATION'),
+				('Juice',		'ORGANIZATION'),
+				('Los',			'GPE'),
+				('Angeles',		'GPE'),
+				('Gwyneth',		'PERSON'),
+				('Paltrow',		'PERSON'),
+				('Shailene',	'PERSON'),
+				('Bacon',		'PERSON')]
+ 
+gold_indices = {}
+for token, tag in gold_labels:
+	#print(tokens.index(token))
+	try:
+		gold_indices[tokens.index(token)] = tag
+	except:
+		print(token)
+
+#add manualy since tokenizer fails to tokenize correctly
+gold_indices[75] = 'ORGANIZATION'
+
+#Connect tagged_chunks to original tokens to get token 
+tagged_labels = {}
+for chunk in tagged_chunks:
+	for token, _ in chunk:
+		try:
+			tagged_labels[tokens.index(token)] = chunk._label
+		except:
+			print(token)
+
+print((len(gold_indices), len(tagged_labels)))
+
+#compare tagged and gold labels to get metrics
+#recall
+recalled_tokens = [key for key in gold_indices.keys() if (key in tagged_labels.keys() and tagged_labels[key] == gold_indices[key])]
+recall = len(recalled_tokens) / len(gold_indices.keys())
+print(recall)
+
+#precision
+correct_tags = [key for key in tagged_labels.keys() if (key in gold_indices.keys() and tagged_labels[key] == gold_indices[key])]
+precision = len(correct_tags)/len(tagged_labels)
+print(precision)
+
+
+''' Qualitative analysis:
+We found a recall of 0.8 and a precision of +- 0.67 which tells us that the used NER tagger 
+tags more tokens than necessary. At least one mistake is probably caused by error propagation from the tokenizer,
+since "Juice" in "Moon Juice" is not properly tokenized, this probably results into incorrect NER tagging.
+
+ '''
