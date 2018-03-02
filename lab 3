@@ -1,0 +1,165 @@
+#Lab assignment 3
+#Niels van der Heijden, Ruth Wijma and Nadine Enning
+
+#PART 1
+## Sentiment analysis on the movie reviews data:
+
+#Run the VADER tagger in such a way that it analyses the texts (one after another) from the movie-review corpus
+>>> from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+>>> analyser = SentimentIntensityAnalyzer()
+
+>>> import nltk
+>>> from nltk.corpus import movie_reviews
+
+#define for the first 50 reviews if they are more positive or negative. 
+>>> ids = movie_reviews.fileids()
+>>> ['pos' if analyser.polarity_scores(movie_reviews.raw(ids[i]).replace('\n','')).get('pos') >
+analyser.polarity_scores(movie_reviews.raw(ids[i]).replace('\n','')).get('neg') else 'neg' for i in range(50)]
+['pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'neg', 
+'neg', 'neg', 'pos', 'pos', 'neg', 'neg', 'neg', 'neg', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 
+'pos', 'pos', 'neg', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 'pos', 'pos', 'pos', 
+'pos', 'pos', 'pos', 'neg', 'pos']
+
+#Make a counter that allows you to run the analysis on  a limited set of reviews 
+#(it takes too much time to analyze 2000 reviews so  experiments will be run 
+#on the subset of the first 100 positive and the first 100 negative reviews)
+
+#First split the reviews in positively and negatively rated movies, then take the first 100 from both. 
+>>> positive = [ids[i] for i in range(len(ids)) if ids[i].startswith('pos')]
+>>> negative = [ids[i] for i in range(len(ids)) if ids[i].startswith('neg')]
+>>> pos100 = [positive[i] for i in range(0,100)]
+>>> neg100 = [negative[i] for i in range(0,100)]
+
+>>> print(pos100)
+['pos/cv000_29590.txt', 'pos/cv001_18431.txt', 'pos/cv002_15918.txt', 'pos/cv003_11664.txt', 'pos/cv004_11636.txt', 
+'pos/cv005_29443.txt', 'pos/cv006_15448.txt', 'pos/cv007_4968.txt', 'pos/cv008_29435.txt', 'pos/cv009_29592.txt', 
+'pos/cv010_29198.txt', 'pos/cv011_12166.txt', 'pos/cv012_29576.txt', 'pos/cv013_10159.txt', 'pos/cv014_13924.txt', 
+'pos/cv015_29439.txt', 'pos/cv016_4659.txt', 'pos/cv017_22464.txt', 'pos/cv018_20137.txt', 'pos/cv019_14482.txt', 
+'pos/cv020_8825.txt', 'pos/cv021_15838.txt', 'pos/cv022_12864.txt', 'pos/cv023_12672.txt', 'pos/cv024_6778.txt', 
+'pos/cv025_3108.txt', 'pos/cv026_29325.txt', 'pos/cv027_25219.txt', 'pos/cv028_26746.txt', 'pos/cv029_18643.txt', 
+'pos/cv030_21593.txt', 'pos/cv031_18452.txt', 'pos/cv032_22550.txt', 'pos/cv033_24444.txt', 'pos/cv034_29647.txt', 
+'pos/cv035_3954.txt', 'pos/cv036_16831.txt', 'pos/cv037_18510.txt', 'pos/cv038_9749.txt', 'pos/cv039_6170.txt', 
+'pos/cv040_8276.txt', 'pos/cv041_21113.txt', 'pos/cv042_10982.txt', 'pos/cv043_15013.txt', 'pos/cv044_16969.txt', 
+'pos/cv045_23923.txt', 'pos/cv046_10188.txt', 'pos/cv047_1754.txt', 'pos/cv048_16828.txt', 'pos/cv049_20471.txt', 
+'pos/cv050_11175.txt', 'pos/cv051_10306.txt', 'pos/cv052_29378.txt', 'pos/cv053_21822.txt', 'pos/cv054_4230.txt', 
+'pos/cv055_8338.txt', 'pos/cv056_13133.txt', 'pos/cv057_7453.txt', 'pos/cv058_8025.txt', 'pos/cv059_28885.txt', 
+'pos/cv060_10844.txt', 'pos/cv061_8837.txt', 'pos/cv062_23115.txt', 'pos/cv063_28997.txt', 'pos/cv064_24576.txt', 
+'pos/cv065_15248.txt', 'pos/cv066_10821.txt', 'pos/cv067_19774.txt', 'pos/cv068_13400.txt', 'pos/cv069_10801.txt', 
+'pos/cv070_12289.txt', 'pos/cv071_12095.txt', 'pos/cv072_6169.txt', 'pos/cv073_21785.txt', 'pos/cv074_6875.txt', 
+'pos/cv075_6500.txt', 'pos/cv076_24945.txt', 'pos/cv077_22138.txt', 'pos/cv078_14730.txt', 'pos/cv079_11933.txt', 
+'pos/cv080_13465.txt', 'pos/cv081_16582.txt', 'pos/cv082_11080.txt', 'pos/cv083_24234.txt', 'pos/cv084_13566.txt', 
+'pos/cv085_1381.txt', 'pos/cv086_18371.txt', 'pos/cv087_1989.txt', 'pos/cv088_24113.txt', 'pos/cv089_11418.txt', 
+'pos/cv090_0042.txt', 'pos/cv091_7400.txt', 'pos/cv092_28017.txt', 'pos/cv093_13951.txt', 'pos/cv094_27889.txt', 
+'pos/cv095_28892.txt', 'pos/cv096_11474.txt', 'pos/cv097_24970.txt', 'pos/cv098_15435.txt', 'pos/cv099_10534.txt']
+>>> print(neg100)
+['neg/cv000_29416.txt', 'neg/cv001_19502.txt', 'neg/cv002_17424.txt', 'neg/cv003_12683.txt', 'neg/cv004_12641.txt', 
+'neg/cv005_29357.txt', 'neg/cv006_17022.txt', 'neg/cv007_4992.txt', 'neg/cv008_29326.txt', 'neg/cv009_29417.txt', 
+'neg/cv010_29063.txt', 'neg/cv011_13044.txt', 'neg/cv012_29411.txt', 'neg/cv013_10494.txt', 'neg/cv014_15600.txt', 
+'neg/cv015_29356.txt', 'neg/cv016_4348.txt', 'neg/cv017_23487.txt', 'neg/cv018_21672.txt', 'neg/cv019_16117.txt', 
+'neg/cv020_9234.txt', 'neg/cv021_17313.txt', 'neg/cv022_14227.txt', 'neg/cv023_13847.txt', 'neg/cv024_7033.txt', 
+'neg/cv025_29825.txt', 'neg/cv026_29229.txt', 'neg/cv027_26270.txt', 'neg/cv028_26964.txt', 'neg/cv029_19943.txt', 
+'neg/cv030_22893.txt', 'neg/cv031_19540.txt', 'neg/cv032_23718.txt', 'neg/cv033_25680.txt', 'neg/cv034_29446.txt', 
+'neg/cv035_3343.txt', 'neg/cv036_18385.txt', 'neg/cv037_19798.txt', 'neg/cv038_9781.txt', 'neg/cv039_5963.txt', 
+'neg/cv040_8829.txt', 'neg/cv041_22364.txt', 'neg/cv042_11927.txt', 'neg/cv043_16808.txt', 'neg/cv044_18429.txt', 
+'neg/cv045_25077.txt', 'neg/cv046_10613.txt', 'neg/cv047_18725.txt', 'neg/cv048_18380.txt', 'neg/cv049_21917.txt', 
+'neg/cv050_12128.txt', 'neg/cv051_10751.txt', 'neg/cv052_29318.txt', 'neg/cv053_23117.txt', 'neg/cv054_4101.txt', 
+'neg/cv055_8926.txt', 'neg/cv056_14663.txt', 'neg/cv057_7962.txt', 'neg/cv058_8469.txt', 'neg/cv059_28723.txt', 
+'neg/cv060_11754.txt', 'neg/cv061_9321.txt', 'neg/cv062_24556.txt', 'neg/cv063_28852.txt', 'neg/cv064_25842.txt', 
+'neg/cv065_16909.txt', 'neg/cv066_11668.txt', 'neg/cv067_21192.txt', 'neg/cv068_14810.txt', 'neg/cv069_11613.txt', 
+'neg/cv070_13249.txt', 'neg/cv071_12969.txt', 'neg/cv072_5928.txt', 'neg/cv073_23039.txt', 'neg/cv074_7188.txt', 
+'neg/cv075_6250.txt', 'neg/cv076_26009.txt', 'neg/cv077_23172.txt', 'neg/cv078_16506.txt', 'neg/cv079_12766.txt', 
+'neg/cv080_14899.txt', 'neg/cv081_18241.txt', 'neg/cv082_11979.txt', 'neg/cv083_25491.txt', 'neg/cv084_15183.txt', 
+'neg/cv085_15286.txt', 'neg/cv086_19488.txt', 'neg/cv087_2145.txt', 'neg/cv088_25274.txt', 'neg/cv089_12222.txt', 
+'neg/cv090_0049.txt', 'neg/cv091_7899.txt', 'neg/cv092_27987.txt', 'neg/cv093_15606.txt', 'neg/cv094_27868.txt', 
+'neg/cv095_28730.txt', 'neg/cv096_12262.txt', 'neg/cv097_26081.txt', 'neg/cv098_17021.txt', 'neg/cv099_11189.txt']
+
+#First run the program on only the first positive review and the first negative review.
+
+#Find true values for first 100 positive reviews
+>>> real_pos100 = ['pos' if analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('pos') > 
+analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg') else 'neg' for i in range(0, len(pos100))]
+>>> print(real_pos100)
+['pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 
+'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'neg', 'pos', 'pos', 
+'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 
+'pos', 'pos', 'neg', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 
+'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 
+'neg', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 
+'pos', 'neg', 'neg', 'neg']
+
+#Find true values for first 100 positive reviews
+>>> real_neg100 = ['pos' if analyser.polarity_scores(movie_reviews.raw(neg100[i]).replace('\n','')).get('pos') > analyser.polarity_scores(movie_reviews.raw(neg100[i]).replace('\n','')).get('neg') else 'neg' for i in range(0, len(neg100))]
+>>> print(real_neg100)
+['pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 
+'neg', 'pos', 'pos', 'neg', 'neg', 'neg', 'neg', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'pos', 
+'neg', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 
+'neg', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'neg', 'neg', 'pos', 'pos', 'neg', 'neg', 'neg', 'neg', 
+'neg', 'pos', 'pos', 'neg', 'neg', 'neg', 'pos', 'pos', 'neg', 'neg', 'neg', 'pos', 'neg', 'pos', 'pos', 'neg', 
+'neg', 'neg', 'neg', 'pos', 'neg', 'pos', 'neg', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'pos', 'pos', 
+'pos', 'pos', 'neg', 'neg']
+
+#Q: Take a look at the output: which part-of-speech tags (NN, JJ, etc.)  seem to be most correlated to sentiment and polarity?
+#A: ????????????????????????????????
+
+#PART 2
+## Computing Precision, Recall & F-measure 
+
+#Define true and false positives. 
+>>> true_pos = 0
+>>> false_pos = 0
+>>> for i in range(100):
+...     if real_pos100[i] is 'pos':
+...             true_pos+=1
+...     else:
+...             false_pos+=1
+
+#Define true and false negatives. 
+>>> true_neg = 0
+>>> false_neg = 0
+>>> for i in range(100):
+...     if real_neg100[i] is 'neg':
+LAB...             true_neg+=1
+...     else:
+...             false_neg+=1
+
+#Values of true positives, false positives, true negatives and false negatives. 
+>>> true_pos
+82
+>>> false_pos
+18
+>>> true_neg
+45
+>>> false_neg
+55
+
+#Define precision, recall and f_measure
+>>> precision = true_pos/(true_pos+false_pos)
+>>> recall = true_pos/(true_pos+false_neg)
+>>> f_measure = (2*precision*recall)/(precision+recall)
+
+#Values of precision, recall and f_measure
+>>> precision
+0.41
+>>> recall
+0.5985401459854015
+>>> f_measure
+0.6919831223628692
+
+#Q: Explain whether you computed the micro or macro F-score and motivate this.  
+
+#A: We computed the micro F-score, because in the micro F-score you take everything together and calculate
+#   the score then instead of taking smaller sub sets and calculate the average of these scores. 
+
+#PART 3
+## Evaluation
+
+#Q: Consider the results and try to figure out what happens. Present a scenario in which you want to optimise 
+#   for either a high recall or a high precision and motivate your choice for that scenario. What is the best 
+#   setting if you prefer a high recall or a high precision?  (5 sentences max)
+
+#A: A scenario in which you would want a higher precision is when you want to make a ranking to find the best
+#   movies in the set. You want the precision to be higher, because in this way you are more strict on 
+#   positive sentences, so that you are sure that you would not rate a sentence as positive which is actually 
+#   neutral or negative. 
+#   BEST SETTING???
+
