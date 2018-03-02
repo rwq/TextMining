@@ -1,0 +1,21 @@
+
+Goal/question: are Dutch polls representative for the opinion of the Dutch on Twitter?
+					Compare sentiment per day with polls per day
+
+Textmining assignment
+	Dashboard: Amsterdam interface with live sentiment per district
+		Based on df containing:
+			Tweet, sentiment, party, timestamp, geolocation
+		Insert filter for party
+		Insert slider for time
+	
+	Metrics with predictions for outcome
+		graph with seniment analysis per party throughout time (time variable?)
+		Tweet activity graph --> how much is being tweeted about the political parties/elections
+		Compare polls with twitter sentiment
+			Combine sentiment with historical data
+			
+	To do:
+		Find annotated data set with dutch tweets for sentiment
+		Find polls per day/week throughout time
+	
