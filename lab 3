@@ -27,8 +27,8 @@ analyser.polarity_scores(movie_reviews.raw(ids[i]).replace('\n','')).get('neg') 
 #First split the reviews in positively and negatively rated movies, then take the first 100 from both. 
 >>> positive = [ids[i] for i in range(len(ids)) if ids[i].startswith('pos')]
 >>> negative = [ids[i] for i in range(len(ids)) if ids[i].startswith('neg')]
->>> pos100 = [positive[i] for i in range(0,100)]
->>> neg100 = [negative[i] for i in range(0,100)]
+>>> pos100 = [positive[i] for i in range(0,100)] #positive[:100]
+>>> neg100 = [negative[i] for i in range(0,100)] #negative[:100]
 
 >>> print(pos100)
 ['pos/cv000_29590.txt', 'pos/cv001_18431.txt', 'pos/cv002_15918.txt', 'pos/cv003_11664.txt', 'pos/cv004_11636.txt', 
@@ -77,7 +77,7 @@ analyser.polarity_scores(movie_reviews.raw(ids[i]).replace('\n','')).get('neg') 
 
 #Find true values for first 100 positive reviews
 >>> real_pos100 = ['pos' if analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('pos') > 
-analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg') else 'neg' for i in range(0, len(pos100))]
+analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg') else 'neg' for i in range(len(pos100))]
 >>> print(real_pos100)
 ['pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 
 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'pos', 'neg', 'neg', 'pos', 'pos', 
@@ -88,7 +88,7 @@ analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg
 'pos', 'neg', 'neg', 'neg']
 
 #Find true values for first 100 positive reviews
->>> real_neg100 = ['pos' if analyser.polarity_scores(movie_reviews.raw(neg100[i]).replace('\n','')).get('pos') > analyser.polarity_scores(movie_reviews.raw(neg100[i]).replace('\n','')).get('neg') else 'neg' for i in range(0, len(neg100))]
+>>> real_neg100 = ['pos' if analyser.polarity_scores(movie_reviews.raw(neg100[i]).replace('\n','')).get('pos') > analyser.polarity_scores(movie_reviews.raw(neg100[i]).replace('\n','')).get('neg') else 'neg' for i in range(len(neg100))]
 >>> print(real_neg100)
 ['pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 'pos', 'neg', 'pos', 'pos', 'pos', 'neg', 'pos', 'neg', 'neg', 
 'neg', 'pos', 'pos', 'neg', 'neg', 'neg', 'neg', 'pos', 'pos', 'pos', 'pos', 'neg', 'pos', 'pos', 'pos', 'pos', 
@@ -105,19 +105,21 @@ analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg
 ## Computing Precision, Recall & F-measure 
 
 #Define true and false positives. 
+
+
 >>> true_pos = 0
 >>> false_pos = 0
->>> for i in range(100):
+>>> for i in range(100): # true_pos = real_pos100.count('pos')
 ...     if real_pos100[i] is 'pos':
 ...             true_pos+=1
 ...     else:
-...             false_pos+=1
+...             false_pos+=1 
 
 #Define true and false negatives. 
 >>> true_neg = 0
 >>> false_neg = 0
 >>> for i in range(100):
-...     if real_neg100[i] is 'neg':
+...     if real_neg100[i] is 'neg': # real_neg = real_neg100.count('neg')
 LAB...             true_neg+=1
 ...     else:
 ...             false_neg+=1
