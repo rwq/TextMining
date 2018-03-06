@@ -1,4 +1,52 @@
+V2:
 
+Obama vs Trump: a tweet comparison on sentiment and subject level
+	Subquestion: do both gentlemen represent themselves fully on the POTUS account? --> similaritity between personal account and POTUS
+			OR:	how did presidency influence both gentlemen? --> Compare last year of presidency with first year of non-presidency for Obama en vice versa for Trump
+
+
+Obtain data for:
+	Obama's last year of presidency tweets on POTUS
+	Trump's first year of presidency tweets on POTUS
+		These years are chosen since they are the closest to each other and thus probably the best comparable
+	Depending on subquestion:
+		Obama's tweets during and/or after last year of presidency on personal account
+		Trump's tweets before and/or during his first year of presidency
+
+Subject analysis:
+	determine x subjects per tweet using GENSIM and store all subjects.
+		Create wordcloud based on subject frequency
+	determine n most important subjects across all tweets
+		Give semantic translation per subject
+		Compare subjects per person 
+	
+	Visualize subjects based on their relative amount of occurences (size) and their sentiment (color)
+	
+
+Sentiment analysis:
+	...
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+V1:
 Goal/question: are Dutch polls representative for the opinion of the Dutch on Twitter?
 					Compare sentiment per day with polls per day
 
@@ -19,3 +67,4 @@ Textmining assignment
 		Find annotated data set with dutch tweets for sentiment
 		Find polls per day/week throughout time
 	
+
