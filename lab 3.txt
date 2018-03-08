@@ -109,7 +109,7 @@ analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg
 
 >>> true_pos = 0
 >>> false_pos = 0
->>> for i in range(100): # true_pos = real_pos100.count('pos')
+>>> for i in range(100):
 ...     if real_pos100[i] is 'pos':
 ...             true_pos+=1
 ...     else:
@@ -119,8 +119,8 @@ analyser.polarity_scores(movie_reviews.raw(pos100[i]).replace('\n','')).get('neg
 >>> true_neg = 0
 >>> false_neg = 0
 >>> for i in range(100):
-...     if real_neg100[i] is 'neg': # real_neg = real_neg100.count('neg')
-LAB...             true_neg+=1
+...     if real_neg100[i] is 'neg': 
+...             true_neg+=1
 ...     else:
 ...             false_neg+=1
 
@@ -163,5 +163,5 @@ LAB...             true_neg+=1
 #   movies in the set. You want the precision to be higher, because in this way you are more strict on 
 #   positive sentences, so that you are sure that you would not rate a sentence as positive which is actually 
 #   neutral or negative. 
-#   BEST SETTING???
+# 
 
