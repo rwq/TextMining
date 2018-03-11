@@ -1,0 +1,59 @@
+###LAB ASSIGNMENT###
+###TASK 1###
+from nltk import RegexpParser
+
+text = "They undercut and shortchanged our men and women in uniform with inadequate resource, unstable funding, and an unclear mission. They failed to insist that our often very wealthy ally pays their fair share for defence, putting an unfair burden on the US taxpayer and our great US military."
+tokenized = nltk.word_tokenize(text)
+tagged = nltk.pos_tag(tokenized)
+
+grammar = "NP: {<DT>?<JJ>*<NN>}"
+cp = nltk.RegexpParser(grammar)
+result = cp.parse(tagged) 
+
+np = re.findall(r'NP\s(.*)/NN', str(result))
+np_with_sent = [word for word in np if "/JJ" in word ]
+sentiment = [np.replace("/JJ", "") for np in np_with_sent if "/JJ" in np]
+sentiment = [np.replace("/DT", "") if "/DT" in np else np for np in sentiment]
+
+negative = [np for np in sentiment if re.search(r'\b[(un)(in)]', np) is not None]
+pos_neut = [np for np in sentiment if re.search(r'\b[(un)(in)]', np) is None]
+print("negative sentiment: ")
+print(negative)
+print("\npositive/neutral sentiment: ")
+print(pos_neut)
+
+##OUTPUT## 
+#negative sentiment: 
+#['inadequate resource', 'unstable funding', 'an unclear mission', 'an unfair burden']
+#
+#positive/neutral sentiment: 
+#['wealthy ally', 'fair share']
+
+###TASK 2###
+
+###TASK 3###
+FROM = re.compile(r'.*\bfrom\b(?!\b.+ing)')
+for doc in nltk.corpus.ieer.parsed_docs('NYT_19980315'):
+        for rel1 in nltk.sem.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = FROM):
+                print(nltk.sem.rtuple(rel1))
+##OUTPUT## 
+#[ORG: 'White House'] "support and facing only tepid opposition from the nation's governors," [LOC: 'Silicon Valley']
+
+                
+
+print("-----------------")
+#het voorbeeld 
+print(nltk.corpus.ieer.parsed_docs('NYT_19980315'))
+print("Task 3: ")
+IN = re.compile(r'.*\bin\b(?!\b.+ing)')
+for doc in nltk.corpus.ieer.parsed_docs('NYT_19980315'):
+        for rel in nltk.sem.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = IN):
+                print(nltk.sem.rtuple(rel))
+
+print("--------------------")
+#beginnetje aan b, alleen dit werkt nog niet
+text = "I want to buy a the house at Oxford Street, Joe is going to buy a house next to the train station."
+BUY = re.compile(r'.*\bhiring\b(?!\b.+ing)')
+for doc in nltk.corpus.ieer.parsed_docs('NYT_19980315'):
+        for rel in nltk.sem.extract_rels('PER', 'LOC', doc, corpus='ieer', pattern = BUY):
+                print(nltk.sem.rtuple(rel))
