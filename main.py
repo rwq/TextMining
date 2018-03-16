@@ -47,8 +47,9 @@ def get_all_tweets(screen_name):
 
 tweets_trump = get_all_tweets('BarackObama')
 
-with open('obama.txt', 'w') as f:
+with open('obama2_.txt', 'w') as f:
 	for tweet in tweets_trump:
 		json.dump(tweet._json, f)
+		# f.write('\n')
 
 

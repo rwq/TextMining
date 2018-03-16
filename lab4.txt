@@ -1,0 +1,96 @@
+###Nadine Enning, Niels van der Heijden, Ruth Wijma###
+###Group 16###
+###LAB ASSIGNMEN0T 4###
+
+###TASK 1###
+from nltk import RegexpParser, FreqDist, pos_tag
+from nltk.corpus import gutenberg
+from nltk.book import text4
+import nltk
+import re
+
+text = "They undercut and shortchanged our men and women in uniform with inadequate resource, unstable funding, and an unclear mission. They failed to insist that our often very wealthy ally pays their fair share for defence, putting an unfair burden on the US taxpayer and our great US military."
+tokenized = nltk.word_tokenize(text)
+tagged = nltk.pos_tag(tokenized)
+
+grammar = "NP: {<DT>?<JJ>*<NN>}"
+cp = nltk.RegexpParser(grammar)
+result = cp.parse(tagged) 
+
+np = re.findall(r'NP\s(.*)/NN', str(result))
+np_with_sent = [word for word in np if "/JJ" in word ]
+sentiment = [np.replace("/JJ", "") for np in np_with_sent if "/JJ" in np]
+sentiment = [np.replace("/DT", "") if "/DT" in np else np for np in sentiment]
+
+negative = [np for np in sentiment if re.search(r'\b[(un)(in)]', np) is not None]
+pos_neut = [np for np in sentiment if re.search(r'\b[(un)(in)]', np) is None]
+print("negative sentiment: ")
+print(negative)
+print("\npositive/neutral sentiment: ")
+print(pos_neut)
+
+##OUTPUT## 
+#negative sentiment: 
+#['inadequate resource', 'unstable funding', 'an unclear mission', 'an unfair burden']
+#
+#positive/neutral sentiment: 
+#['wealthy ally', 'fair share']
+
+###TASK 2###
+def get_actions_from_text(text):
+	text_tagged = pos_tag(text)
+	cp = RegexpParser("V: {<V.*>}")
+	result = cp.parse(text_tagged)
+
+	actions = []
+
+	for i in result.subtrees(filter=lambda x: x.label() == 'V'):
+		action = re.findall(r'V [a-zA-Z]+', str(i))
+
+		if len(action) > 0:
+			actions.append(action[0][2:])
+
+	return actions
+
+# get corpus 1
+corpus = gutenberg.words('austen-emma.txt')
+actions1 = get_actions_from_text(corpus)
+
+
+# get corpus 2 (inaugural speeches)
+actions2 = get_actions_from_text(text4)
+
+f1 = FreqDist(actions1)
+f2 = FreqDist(actions2)
+
+f1.plot(50)
+f2.plot(50)
+
+
+# A difference between the two corpora is that the most common verb in the inaugural speech is 'be', while the most common verb in austen-emma is 'was'. Looking through the verbs in both lists, it can be seen that the inaugural speech
+# makes more use of the present tense, while the austen-emma text has a more frequent occurence of the past tense
+
+# This all relies on the part-of-speech tagger doing a good job. When a mistake occurs, either a pos is tagged as being a verb while it is not, or the other way around, being not a verb when it in fact is a verb.
+# I do not think this makes a big difference, because those mistakes are supposed to be made rarely, meaning that they won't make it into the top count in for example the frequency distribution.
+
+
+
+###TASK 3###
+FROM = re.compile(r'.*\bfrom\b(?!\b.+ing)')
+for doc in nltk.corpus.ieer.parsed_docs('NYT_19980315'):
+        for rel1 in nltk.sem.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = FROM):
+                print(nltk.sem.rtuple(rel1))
+##OUTPUT## 
+#[ORG: 'White House'] "support and facing only tepid opposition from the nation's governors," [LOC: 'Silicon Valley']
+
+
+print("--------------------")
+
+#B
+BUY = re.compile(r'.*ing\b')
+for doc in nltk.corpus.ieer.parsed_docs('APW_19980314'):
+    for rel in nltk.sem.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = BUY):
+        print(nltk.sem.rtuple(rel))
+
+##OUTPUT##
+#[ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
