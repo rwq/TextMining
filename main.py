@@ -1,5 +1,6 @@
 import tweepy
 import json
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
 ckey     = "KayK96gy2XEcBemrZqZyAN73x"
@@ -45,11 +46,36 @@ def get_all_tweets(screen_name):
 	return alltweets
 
 
-tweets_trump = get_all_tweets('BarackObama')
+# tweets_trump = get_all_tweets('BarackObama')
 
-with open('obama2_.txt', 'w') as f:
-	for tweet in tweets_trump:
-		json.dump(tweet._json, f)
-		# f.write('\n')
+# with open('obama2_.txt', 'w') as f:
+# 	for tweet in tweets_trump:
+# 		json.dump(tweet._json, f)
+# 		# f.write('\n')
 
 
+df = pd.DataFrame({'source':[],
+                   'text':[],
+                   'created_at':[],
+                   'retweet_count':[],
+                   'favorite_count':[],
+                   'is_retweet':[],
+                   'id_str':[]})
+
+for tweet in tweets_obama:
+    t = tweet._json
+    
+    df = df.append({'source':t['source'],
+                    'text':t['text'],
+                    'created_at':t['created_at'],
+                    'retweet_count':t['retweet_count'],
+                    'favorite_count':t['favorite_count'],
+                    'is_retweet':t['retweeted'],
+                    'id_str':t['id_str']}, ignore_index = True)
+
+analyzer = SentimentIntensityAnalyzer()
+
+df['sentiment'] = df.text.apply(lambda t: analyzer.polarity_scores(t)['compound'])
+
+
+df.to_csv('obama_sentiment.csv', sep=';')
