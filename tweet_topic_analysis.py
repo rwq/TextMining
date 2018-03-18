@@ -104,12 +104,22 @@ def get_topics(tweet_df, nr_topics, nr_words, nr_passes):
 df = pd.read_csv('./trump_tweets_topics.csv')
 df.topic_words.apply(lambda x: filter_topic_words(np.array(x)))
 print(df.head(10)) '''
-trump_tweets = pd.read_csv('./trumptweets.csv', header = 0)
+trump_tweets = pd.read_csv('./data/trump_sentiment.csv', header = 0, sep=';')
 trump_tweets = trump_tweets.dropna(axis=0, how='any')
+print(trump_tweets.head(100))
+trump_tweets['created_at'] = pd.to_datetime(trump_tweets['created_at'])
 #get_topic_words(trump_tweets, 7, 'trump')
 #get_tw_wc('/home/mrvoh/Documents/TextMining/ trump_tweets_topics.csv', mask_path='./trump.jpeg')
 
-nr_topics_list = [10, 20, 30, 40, 50]
+
+
+
+
+
+
+
+
+''' nr_topics_list = [10, 20, 30, 40, 50]
 nr_words_list = [1,2,3,4,5]
 nr_passes_list = [10,25,50]
 
@@ -121,6 +131,6 @@ for nr_topics in nr_topics_list:
                 raw_topics = get_topics(trump_tweets, nr_topics, nr_words, nr_passes)
                 topics = filter_topic_words(raw_topics)
                 f.write(str(topics))
-
+ '''
 
 
