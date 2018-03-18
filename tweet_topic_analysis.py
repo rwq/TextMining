@@ -17,7 +17,7 @@ def filter_topic_words(lda_topics):
     topic_words = []
     for lda_topic in lda_topics:
         print(lda_topic)
-        text = str(lda_topic[1])
+        text = str(lda_topic[0])
         topic_words.append(re.findall(r'"(.*?)"',text))
 
     return topic_words
@@ -39,26 +39,23 @@ def filter_tweets(df, minimum):
 
 def get_topic_words(tweet_df, min_words, person_name):
     tweet_df = filter_tweets(tweet_df, min_words)
+    text = df.text
 
     topics = []
-    for _, row in tweet_df.iterrows():
-        tweet = row.text
+
+    for _, value in text.iteritems():
+        tweet = value
         normalized_tweet = tp.clean(tweet)
         doc_term_matrix, dictionary = tp.get_doc_term_matrix_and_dict([normalized_tweet])
 
         topic = tp.get_topics(doc_term_matrix, SUBJECTS_PER_TWEET, dictionary, 15, WORDS_PER_TWEET)
-        #(print(row.text, topic))
-        #rint(topic)
         topic_words = filter_topic_words([topic])[0]
-        #print(topic_words)
 
         topics.append(topic_words)
 
 
 
     topic_words = pd.Series(topics)
-    print(len(topic_words))
-    print(len(tweet_df.text))
     tweet_df['topic_words'] = pd.Series(topics)
     path = './'+person_name+'_tweets_topics.csv'
     tweet_df.to_csv(path)
@@ -100,16 +97,23 @@ def get_topics(tweet_df, nr_topics, nr_words, nr_passes):
 ############################################################
 # Main
 ############################################################
-''' 
-df = pd.read_csv('./trump_tweets_topics.csv')
-df.topic_words.apply(lambda x: filter_topic_words(np.array(x)))
-print(df.head(10)) '''
-trump_tweets = pd.read_csv('./data/trump_sentiment.csv', header = 0, sep=';')
+
+
+#read in data and filter to right timespan
+trump_tweets = pd.read_csv('./data/trump_sentiment.csv', header = 0, sep=';', lineterminator='\n')
 trump_tweets = trump_tweets.dropna(axis=0, how='any')
-print(trump_tweets.head(100))
 trump_tweets['created_at'] = pd.to_datetime(trump_tweets['created_at'])
-#get_topic_words(trump_tweets, 7, 'trump')
-#get_tw_wc('/home/mrvoh/Documents/TextMining/ trump_tweets_topics.csv', mask_path='./trump.jpeg')
+trump_tweets = trump_tweets[trump_tweets['created_at'] >= '01-01-2017']
+
+''' obama_tweets = pd.read_csv('./data/obama_sentiment.csv', header = 0, sep=';', lineterminator='\n')
+obama_tweets = obama_tweets.dropna(axis=0, how='any')
+obama_tweets['created_at'] = pd.to_datetime(obama_tweets['created_at'])
+obama_tweets = obama_tweets[obama_tweets['created_at'] >= '01-01-2017'] '''
+
+
+#create topic wordcloud
+get_topic_words(trump_tweets, 7, 'trump')
+get_tw_wc('/home/mrvoh/Documents/TextMining/trump_tweets_topics.csv', mask_path='')
 
 
 
