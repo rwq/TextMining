@@ -12,16 +12,9 @@ from PIL import Image
 from os import path
 import matplotlib.pyplot as plt
 import tkinter
+import re
 
-doc1 = "Sugar is bad to consume. My sister likes to have sugar, but not my father."
-doc2 = "My father spends a lot of time driving my sister around to dance practice."
-doc3 = "Doctors suggest that driving may cause increased stress and blood pressure."
-doc4 = "Sometimes I feel pressure to perform well at school, but my father never seems to drive my sister to do better."
-doc5 = "Health experts say that Sugar is not good for your lifestyle."
-
-# compile documents
-doc_complete = [doc1, doc2, doc3, doc4, doc5]
-
+exclude_words = ['https', 'amp', 'rt', 'RT', 'co', 'CO', 'http', 'obama', 'trump', 'BarackObama', 'RealDonaldTrump', 'Trump', 'Obama']
 # clean data by removing stop words and punctuation
 
 
@@ -33,14 +26,30 @@ doc_complete = [doc1, doc2, doc3, doc4, doc5]
 def clean(doc):
     #init sets to filter on
     stop = set(stopwords.words('english'))
-    exclude = set(string.punctuation) 
+    stop.update(exclude_words) 
+    exclude = set(string.punctuation)
     lemma = WordNetLemmatizer()
 
     #apply filters and lemmatization
     stop_free = " ".join([i for i in doc.lower().split() if i not in stop])
     punc_free = ''.join(ch for ch in stop_free if ch not in exclude)
     normalized = [lemma.lemmatize(word) for word in punc_free.split()]
-    return normalized
+    normalized = [i for i in normalized if i not in stop]
+    
+    ###VERSION 1: FIRST STOPWORDS, PUNCTUATION AND LEMMATIZATION IS GOTTEN OUT.###
+    # tagged = nltk.pos_tag(normalized)
+    # namedEnt = nltk.ne_chunk(tagged, binary = True)
+    # nouns = re.findall(r'\b(.*?)/NN', str(namedEnt))
+    # return nouns
+
+    ###VERSION 2: ONLY TOKENIZED###
+    tokenized = nltk.word_tokenize(doc)
+    tagged = nltk.pos_tag(tokenized) 
+    namedEnt = nltk.ne_chunk(tagged, binary = True)
+    nouns = re.findall(r'\b(.*?)/NN', str(namedEnt))  
+    nouns_without_ne = [re.findall(r'NE\s(.*)', str(word))[0] if word.startswith('NE ') else word for word in nouns]
+    nouns_without_ne = [noun for noun in nouns_without_ne if noun not in exclude_words] 
+    return nouns_without_ne
 
 def clean_doc_list(doc_list):
     return [clean(doc) for doc in doc_list]
