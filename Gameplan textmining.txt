@@ -18,7 +18,8 @@ Subject analysis:
 		Create wordcloud based on subject frequency
 	determine n most important subjects across all tweets
 		Give semantic translation per subject
-		Compare subjects per person 
+		Compare subjects per person
+	Determine difference between all tweets and RTs filtered. 
 		
 	Create list of interesting subjects
 		Create lexicon with words for each subject --> Russia, North Korea, Second amendment/mass shootings, Gay rights, Obamacare, Mexicans/illegal, Drugs epidemic, climate change, Syria

@@ -1,0 +1,1 @@
+[['great', 'barackobama'], ['last', 'night'], ['trump', 'via'], ['realdonaldtrump', 'trump'], ['twitter', 'web'], ['realdonaldtrump', 'need'], ['apprentice', 'new'], ['obama', 'china'], ['amp', 'sure'], ['tonight', 'pm']]

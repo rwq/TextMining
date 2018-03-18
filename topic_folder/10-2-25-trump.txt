@@ -1,0 +1,1 @@
+[['china', 'season'], ['trump', 'donald'], ['thanks', 'realdonaldtrump'], ['twitter', 'realdonaldtrump'], ['pm', 'cont'], ['great', 'apprentice'], ['amp', 'scotland'], ['barackobama', 'deal'], ['realdonaldtrump', 'celebrity'], ['u', 'obama']]

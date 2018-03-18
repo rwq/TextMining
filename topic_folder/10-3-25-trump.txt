@@ -1,0 +1,1 @@
+[['cont', 'realdonaldtrump', 'trump'], ['interview', 'hotel', 'new'], ['thanks', 'great', 'realdonaldtrump'], ['pm', 'tonight', 'miss'], ['barackobama', 'obama', 'apprentice'], ['trump', 'donald', 'happy'], ['realdonaldtrump', 'president', 'run'], ['great', 'make', 'think'], ['trump', 'realdonaldtrump', 'great'], ['twitter', 'web', 'thank']]

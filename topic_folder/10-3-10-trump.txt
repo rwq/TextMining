@@ -1,0 +1,1 @@
+[['trump', 'tower', 'via'], ['twitter', 'web', 'realdonaldtrump'], ['apprentice', 'china', 'celebrity'], ['barackobama', 'realdonaldtrump', 'president'], ['great', 'make', 'hotel'], ['cant', 'realdonaldtrump', 'watch'], ['trump', 'golf', 'course'], ['good', 'realdonaldtrump', 'never'], ['pm', 'tonight', 'cont'], ['thanks', 'realdonaldtrump', 'great']]

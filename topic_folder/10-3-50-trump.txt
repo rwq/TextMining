@@ -1,0 +1,1 @@
+[['golf', 'trump', 'course'], ['obama', 'u', 'amp'], ['apprentice', 'celebrity', '9'], ['great', 'realdonaldtrump', 'thank'], ['twitter', 'web', 'episode'], ['trump', 'realdonaldtrump', 'donald'], ['hotel', 'trump', 'realdonaldtrump'], ['miss', 'art', 'hillary'], ['realdonaldtrump', 'thanks', 'great'], ['barackobama', 'interview', 'trump']]

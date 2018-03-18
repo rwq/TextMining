@@ -1,0 +1,1 @@
+[['barackobama', 'cont'], ['obama', 'u'], ['trump', 'new'], ['nbc', 'last'], ['happy', 'debt'], ['twitter', 'web'], ['pm', 'tonight'], ['realdonaldtrump', 'trump'], ['realdonaldtrump', 'miss'], ['thanks', 'realdonaldtrump']]

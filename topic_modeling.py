@@ -61,8 +61,25 @@ def get_topics(doc_term_matrix, nr_topics, dictionary, nr_passes, nr_words):
     return ldamodel.print_topics(num_topics = nr_topics, num_words = nr_words)
     
 
+def  create_wc(text,mask_path = '', max_words = 1000):
+    sw = STOPWORDS
 
-###################################################
+    if mask_path == '':
+        wc = WordCloud(max_words = max_words, stopwords=sw, margin=10, random_state=1).generate(text)
+    else:
+        mask = np.array(Image.open(mask_path)) 
+        wc = WordCloud(max_words = max_words, mask=mask, stopwords=sw, margin=10, random_state=1).generate(text)
+
+    default_colors = wc.to_array()
+
+    plt.figure()
+    plt.title("Default colors")
+    plt.imshow(default_colors, interpolation="bilinear")
+    plt.axis("off")
+    plt.show() 
+
+
+''' ###################################################
 # Practice
 ###################################################
 normalized = clean_doc_list(doc_complete)
@@ -95,4 +112,4 @@ plt.figure()
 plt.title("Default colors")
 plt.imshow(default_colors, interpolation="bilinear")
 plt.axis("off")
-plt.show()
+plt.show() '''
