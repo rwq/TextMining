@@ -1,6 +1,7 @@
 import tweepy
 import json
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import pandas as pd
 
 
 ckey     = "KayK96gy2XEcBemrZqZyAN73x"
@@ -32,7 +33,7 @@ def get_all_tweets(screen_name):
 	while len(new_tweets) > 0:
 	
 		#all subsiquent requests use the max_id param to prevent duplicates
-		new_tweets = api.user_timeline(screen_name = screen_name,count=199,max_id=oldest)
+		new_tweets = api.user_timeline(screen_name = screen_name,count=199,max_id=oldest, tweet_mode='extended')
 		
 		#save most recent tweets
 		alltweets.extend(new_tweets)
@@ -52,7 +53,7 @@ def get_all_tweets(screen_name):
 # 	for tweet in tweets_trump:
 # 		json.dump(tweet._json, f)
 # 		# f.write('\n')
-
+tweets_obama = get_all_tweets('BarackObama')
 
 df = pd.DataFrame({'source':[],
                    'text':[],
@@ -66,7 +67,7 @@ for tweet in tweets_obama:
     t = tweet._json
     
     df = df.append({'source':t['source'],
-                    'text':t['text'],
+                    'text':t['full_text'],
                     'created_at':t['created_at'],
                     'retweet_count':t['retweet_count'],
                     'favorite_count':t['favorite_count'],
@@ -78,4 +79,4 @@ analyzer = SentimentIntensityAnalyzer()
 df['sentiment'] = df.text.apply(lambda t: analyzer.polarity_scores(t)['compound'])
 
 
-df.to_csv('obama_sentiment.csv', sep=';')
+df.to_csv('obama_sentiment_full.csv', sep=';')
