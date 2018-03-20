@@ -1,0 +1,121 @@
+#Niels van der Heijden, Ruth Wijma and Nadine Enning
+#Group 16
+###################
+#Lab assignment 5
+##################
+
+#Task 1: Create a bar chart containing two series that reflects the size 
+#in number of different words of 5 different corpora.
+
+import numpy as np
+import matplotlib.pyplot as plt 
+import nltk
+from nltk.stem import WordNetLemmatizer
+
+lem = WordNetLemmatizer()
+
+corpora = [nltk.corpus.gutenberg, nltk.corpus.brown, nltk.corpus.inaugural, nltk.corpus.reuters, nltk.corpus.names]
+corpora_series_1 = []
+corpora_series_2 = []
+
+for corpus in corpora: 
+	tokenized = nltk.word_tokenize(corpus.raw())
+	no_capital = [word.lower() for word in tokenized]
+	lemmatized = [lem.lemmatize(word) for word in no_capital]
+	series_2 = set(lemmatized)
+
+	corpora_series_1.append(len(tokenized))
+	corpora_series_2.append(len(series_2)) 
+
+
+fig, ax = plt.subplots()
+index = np.arange(len(corpora_series_1))
+bar_width = 0.35
+opacity = 0.8
+
+series_1 = plt.bar(index, corpora_series_1, bar_width, alpha = opacity, 
+	color = 'b', label = 'Series 1')
+series_2 = plt.bar(index+bar_width, corpora_series_2, bar_width, alpha = opacity,
+	color = 'g', label = 'Series 2')
+
+
+plt.xlabel('Corpora')
+plt.ylabel('Number of words')
+plt.title('Bar chart')
+plt.xticks(index+bar_width, ('Gutenberg', 'Brown', 'Inaugural Address', 'Reuters', 'Names'))
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+##Results: 
+##corpora_series_1 = [2538215, 1423314, 144997, 1548307, 7947]
+##corpora_series_2 = [48147, 62877, 8171, 50283, 7559]
+##Link to bar chart:
+##https://drive.google.com/open?id=1GX8vpdLR2iezMlFdPqnZkbvJmE8j7Bvp
+
+
+#Task 2: Create a geochart that displays how often different locations 
+#are mentioned in a text proportionally to each other.
+from geotext import GeoText
+
+with open('./europe_backpacker_index.txt', 'r') as f:
+    geo = GeoText(f.read())
+
+print(geo.country_mentions)
+>> OrderedDict([('NL', 58), ('US', 50), ('HR', 24), ('NO', 17), ('ES', 14), ('DE', 14), ('CZ', 13), 
+('GB', 12), ('IT', 12), ('LV', 8), ('PL', 7), ('MT', 7), ('FR', 7), ('AT', 7), ('UA', 7), ('FI', 6), 
+('SI', 6), ('BE', 6), ('SE', 6), ('RO', 6), ('CH', 6), ('PT', 5), ('EE', 5), ('TR', 5), ('BG', 5), 
+('RS', 5), ('IS', 5), ('RU', 5), ('LT', 5), ('HU', 5), ('SK', 4), ('VE', 4), ('DK', 4), ('UK', 3), 
+('GR', 3), (), ('BA', 3), ('IN', 1), ('IE', 1), ('GH', 1), ('ZA', 1), ('IL', 1), ('LU', 1), ('MC', 1), ('SZ', 1)])
+
+#Using this output we created a geomap using Google Charts
+#See this link for exported source code (GitHub): https://gist.github.com/anonymous/3407836472dcdbf4ede319191c6d1873
+#See this link for interface with interactive geo map: https://jsfiddle.net/htuehaLt/2/
+
+
+#Task 3: Task 3: Experiment with the different settings in the wordcloud 
+#package. Create two different word clouds, using different parameter 
+#setups from the wordcloud package, for example max_words, stopwords. 
+#It is up to you whether you lemmatise/stem the text before processing. 
+
+from wordcloud import WordCloud, STOPWORDS
+from os import path
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+
+#Word cloud 1: a general word cloud of the inaugural speech of Obama
+text = open('obamaspeech.txt').read()
+wc = WordCloud(max_words = 10, margin=10, stopwords = STOPWORDS, random_state=1).generate(text)
+
+default_colors = wc.to_array()
+
+plt.figure()
+plt.title("Word cloud inaugural speech Obama 1")
+plt.imshow(default_colors, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+###Link
+###https://drive.google.com/open?id=1aPDvqajvqfcXXaerkUS6FJXf7tfE-Rsb
+
+#Word cloud 2: a word cloud of the speech of Obama without stopwords and in 
+#in the form of Obama himself. 
+d = path.dirname(__file__)
+mask = np.array(Image.open(path.join(d, "obama.jpg"))) 
+sw = STOPWORDS
+
+text = open('obamaspeech.txt').read()
+wc2 = WordCloud(max_words = 1000, mask=mask, stopwords=sw, margin=10, random_state=1).generate(text)
+
+default_colors2 = wc2.to_array()
+
+plt.figure()
+plt.title("Word cloud inaugural speech Obama 2")
+plt.imshow(default_colors2, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+###Link: 
+###https://drive.google.com/open?id=1UuAszbM9haBKpoYL6Nt7488e8o4F8XSM
