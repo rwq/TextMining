@@ -1,0 +1,118 @@
+#Code for sentiment analysis on pre-defined topics
+
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt 
+import nltk
+
+def fuzzy(search_words, tweets, path, sentiment, threshold_rate):
+	sentiment_of_subject = []
+	for tweet_number in range(len(tweets)): 
+		highest_rate = 0
+		tweet = ""
+		for word in search_words: 
+			tweets[tweet_number] = tweets[tweet_number].encode('utf-8', "ignore")
+			tweets[tweet_number] = tweets[tweet_number].decode("ascii", "ignore")
+			tweet = nltk.word_tokenize(tweets[tweet_number])
+			tweet = ' '.join(tweet)
+			rate = fuzz.partial_ratio(word, tweet)
+
+			if rate > highest_rate:	
+				highest_rate = rate 
+				
+		if highest_rate > threshold_rate: 
+			print(str(highest_rate)+",   "+tweet)
+			sentiment_of_subject.append(sentiment[tweet_number])
+			
+	return sentiment_of_subject
+
+def make_histogram(sentiment_trump, sentiment_obama, title):
+	weights_obama = np.ones_like(sentiment_obama)/len(sentiment_obama)
+	weights_trump = np.ones_like(sentiment_trump)/len(sentiment_trump)
+
+	bins = np.linspace(-1, 1, 17)
+	plt.title(title)
+	plt.ylabel("Normalized number of tweets")
+	plt.xlabel("Sentiment of tweets")
+	plt.hist(sentiment_obama, bins, weights = weights_obama, color = 'b', alpha=0.5, label = "Obama")
+	plt.hist(sentiment_trump, bins, weights = weights_trump, color = 'r', alpha=0.5, label = "Trump")
+	plt.legend(loc='upper right')
+	plt.show()
+
+def sentiment_without_zeros(sentiment):
+	return [sent for sent in sentiment if sent < -0.25 or sent > 0.25]
+
+def make_graph(search_words, threshold_rate, subject):
+	sentiment_trump_subject = fuzzy(search_words, tweets_trump, output_trump, sentiment_trump, threshold_rate)
+	sentiment_obama_subject = fuzzy(search_words, tweets_obama, output_obama, sentiment_obama, threshold_rate)
+	print("Number of tweets Trump: "+ str(len(sentiment_trump_subject)))
+	print("Number of tweets Obama: "+ str(len(sentiment_obama_subject)))	
+	make_histogram(sentiment_trump_subject, sentiment_obama_subject, subject)
+
+
+###SEARCH WORDS###
+search_russia = ['putin', 'russia', 'russian', 'kremlin', 'moscow', 'cold war']  
+search_n_korea = ['north korea', 'kim jong un', 'pyongyang',  'nuclear button', 'north korean'] 
+search_gun = ['second amendment', 'weapon', 'shooting', 'assault weapon', '2nd amendment', 'gun violence', 'free state', 'gun sales', 'gun laws', 'gun safety laws', 'gunsinamerica', 'gunviolence', 'wearorange', 'gun free zone', 'shooter', 'gun control', 'gun debate'] #'militia','gun',   
+search_gay = ['gay', 'homosexual', 'lesbian', 'lgbt', 'bisexual', 'same-sex marriage']
+search_drugs = ['drugs', 'heroin', 'marihuana',  'war on drugs', 'drug policy', 'drug war', 'drug dealer', 'drug cartel', 'drug abuse', 'drug crime', 'drug offender'] #xtc, mdma'smoke joint', 'weed', 
+search_obama_care = ['obama care', 'obamacare',  'health insurance', 'health care', 'healthcare', 'affordable care act', 'ACA', 'health coverage'] #'trump care', 'trumpcare',
+search_care = ['saint petersburg'] #drug abuse, drug crime drug offender
+
+###OBAMA###
+path_obama = r'C:\\Users\\Nadine\\Documents\\Business Analytics Master\\Text mining\\Eindproject\\obama_sentiment_full.csv'
+df_obama = pd.read_csv(path_obama, delimiter = ';', header = 0)
+
+tweets_obama = [df_obama['text'][i].lower() for i in range(len(df_obama['text']))]
+sentiment_obama = [df_obama['sentiment'][i] for i in range(len(df_obama['sentiment']))]
+
+output_obama = 'tweets_obama.txt'
+
+
+###TRUMP###
+path_trump = r'C:\\Users\\Nadine\\Documents\\Business Analytics Master\\Text mining\\Eindproject\\trump_sentiment.csv'
+df_trump = pd.read_csv(path_trump, delimiter = ';', header = 0, lineterminator='\n')
+
+tweets_trump = [df_trump['text'][i].lower() for i in range(len(df_trump['text']))]
+sentiment_trump = [df_trump['sentiment\r'][i] for i in range(len(df_trump['sentiment\r']))]
+
+output_trump = 'tweets_trump.txt'
+
+
+###RUSSIA###
+title_russia = "Russia"
+threshold_rate_russia = 88
+print(title_russia)
+make_graph(search_russia, threshold_rate_russia, title_russia)
+
+###NORTH KOREA###
+title_n_korea = "North Korea"
+threshold_rate_n_korea = 90
+print(title_n_korea)
+make_graph(search_n_korea, threshold_rate_n_korea, title_n_korea)
+
+###SECOND AMENDMENT###
+title_weapons = "Second Amendment"
+threshold_rate_weapons = 90
+print(title_weapons)
+make_graph(search_gun, threshold_rate_weapons, title_weapons)
+
+###GAY RIGHTS###
+title_gay = "Gay rights"
+threshold_rate_gay = 80
+print(title_gay)
+make_graph(search_gay, threshold_rate_gay, title_gay)
+
+###WAR ON DRUGS###
+title_drugs = "War on drugs"
+threshold_rate_drugs = 83
+print(title_drugs)
+make_graph(search_drugs, threshold_rate_drugs, title_drugs)
+
+##OBAMA CARE###
+title_care = "Obama care"
+threshold_rate_care = 90
+print(title_care)
+make_graph(search_obama_care, threshold_rate_care, title_care)
